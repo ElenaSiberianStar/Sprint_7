@@ -15,7 +15,7 @@ import data.DataGenerator;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
-
+import static org.apache.http.HttpStatus.*;
 public class CourierLoginTest {
 
     private Service client;
@@ -45,8 +45,8 @@ public class CourierLoginTest {
     public void loginCourierSuccess() {
         Response response = client.loginCourier(
                 new CourierLoginData(courier.getLogin(), courier.getPassword()));
-
-        assertEquals(200, response.statusCode());
+        courierId = response.jsonPath().getInt("id");
+        assertEquals(SC_OK, response.statusCode());
         response.then().body("id", notNullValue());   // id каждый раз новый — проверяем только наличие
     }
 
@@ -57,7 +57,7 @@ public class CourierLoginTest {
         Response response = client.loginCourier(
                 new CourierLoginData(courier.getLogin(), courier.getPassword() + "wrong"));
 
-        assertEquals(404, response.statusCode());
+        assertEquals(SC_NOT_FOUND, response.statusCode());
         response.then().body("message", equalTo("Учетная запись не найдена"));
     }
 
@@ -68,7 +68,7 @@ public class CourierLoginTest {
         Response response = client.loginCourier(
                 new CourierLoginData(courier.getLogin() + "wrong", courier.getPassword()));
 
-        assertEquals(404, response.statusCode());
+        assertEquals(SC_NOT_FOUND, response.statusCode());
         response.then().body("message", equalTo("Учетная запись не найдена"));
     }
 
@@ -80,7 +80,7 @@ public class CourierLoginTest {
                 "nonexistent" + System.currentTimeMillis(),
                 "pass" + System.currentTimeMillis()));
 
-        assertEquals(404, response.statusCode());
+        assertEquals(SC_NOT_FOUND, response.statusCode());
         response.then().body("message", equalTo("Учетная запись не найдена"));
     }
 
@@ -91,7 +91,7 @@ public class CourierLoginTest {
         Response response = client.loginCourier(
                 new CourierLoginData(null, courier.getPassword()));
 
-        assertEquals(400, response.statusCode());
+        assertEquals(SC_BAD_REQUEST, response.statusCode());
         response.then().body("message", equalTo("Недостаточно данных для входа"));
     }
 
@@ -103,7 +103,7 @@ public class CourierLoginTest {
         Response response = client.loginCourier(
                 new CourierLoginData(courier.getLogin(), null));
 
-        assertEquals(400, response.statusCode());
+        assertEquals(SC_BAD_REQUEST, response.statusCode());
         response.then().body("message", equalTo("Недостаточно данных для входа"));
     }
 }

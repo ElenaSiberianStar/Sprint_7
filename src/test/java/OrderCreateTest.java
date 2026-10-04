@@ -17,7 +17,7 @@ import java.util.Collection;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
-
+import static org.apache.http.HttpStatus.*;
 @RunWith(Parameterized.class)
 public class OrderCreateTest {
 
@@ -65,7 +65,7 @@ public class OrderCreateTest {
 
         Response response = client.createOrder(order);
 
-        assertEquals(201, response.statusCode());
+        assertEquals(SC_CREATED, response.statusCode());
         response.then().body("track", notNullValue());
         createdTrack = response.as(TrackResponse.class).getTrack();
     }

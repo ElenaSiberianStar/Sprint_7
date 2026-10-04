@@ -14,7 +14,7 @@ import data.DataGenerator;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
-
+import static org.apache.http.HttpStatus.*;
 public class CourierCreateTest {
     private Service client;
     private CourierModel createdCourier;
@@ -44,7 +44,7 @@ public class CourierCreateTest {
 
         Response response = client.createCourier(courier);
 
-        assertEquals(201, response.statusCode());
+        assertEquals(SC_CREATED, response.statusCode());
         response.then().body("ok", equalTo(true));
     }
 
@@ -54,10 +54,10 @@ public class CourierCreateTest {
     public void createDuplicateCourierFails() {
         CourierModel courier = DataGenerator.createUniqueCourier();
         createdCourier = courier;
-        assertEquals(201, client.createCourier(courier).statusCode());
+        assertEquals(SC_CREATED, client.createCourier(courier).statusCode());
 
         Response duplicate = client.createCourier(courier);
-        assertEquals(409, duplicate.statusCode());
+        assertEquals(SC_CONFLICT, duplicate.statusCode());
         duplicate.then().body("message", equalTo("Этот логин уже используется. Попробуйте другой."));
     }
 
@@ -70,7 +70,7 @@ public class CourierCreateTest {
 
         Response response = client.createCourier(courier);
 
-        assertEquals(400, response.statusCode());
+        assertEquals(SC_BAD_REQUEST, response.statusCode());
         response.then().body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
 
@@ -83,7 +83,7 @@ public class CourierCreateTest {
 
         Response response = client.createCourier(courier);
 
-        assertEquals(400, response.statusCode());
+        assertEquals(SC_BAD_REQUEST, response.statusCode());
         response.then().body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
 
@@ -95,7 +95,7 @@ public class CourierCreateTest {
 
         Response response = client.createCourier(courier);
 
-        assertEquals(400, response.statusCode());
+        assertEquals(SC_BAD_REQUEST, response.statusCode());
         response.then().body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
 }

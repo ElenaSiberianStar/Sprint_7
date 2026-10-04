@@ -10,7 +10,7 @@ import org.junit.Test;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
-
+import static org.apache.http.HttpStatus.*;
 public class OrdersListTest {
 
     private Service client;
@@ -26,7 +26,7 @@ public class OrdersListTest {
     public void getOrdersReturnsNonEmptyList() {
         Response response = client.getOrders();
 
-        assertEquals(200, response.statusCode());
+        assertEquals(SC_OK, response.statusCode());
         response.then().body("orders", not(empty()));
     }
 }
